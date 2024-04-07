@@ -2,8 +2,12 @@ import os
 import pathlib
 import re
 import shutil
+import tmdbsimple as tmdb
+
 
 from Video import Video
+
+tmdb.API_KEY = "ddf06dec75894ad70d54de116951c8ef"
 class VideoManager:
     def __init__(self, main_folder, file_extensions, exclusion_list):
         self.main_folder = main_folder
@@ -30,7 +34,29 @@ class VideoManager:
                 if any(file.endswith(ext) for ext in self.file_extensions):
                     video_paths.append(pathlib.Path(root) / file)
         for video in video_paths:
-            self.videos.append(Video(path=video, size=video.stat().st_size, type=self.is_tv_or_movie(video), name=self.clean_up_name(video), ext=video.suffix))
+            self.videos.append(Video(path=video, size=video.stat().st_size, video_type=self.is_tv_or_movie(video), name=self.clean_up_name(video), ext=video.suffix,metadata=self.get_metadata(video)))
+
+    def clean_name_for_search(self,video):
+        name = str(video.stem)
+        match = re.search(r'\d{4}|S\d{1,2}E\d{1,2}', name,flags=re.IGNORECASE)
+        if match:
+            clean_name = name[:match.start()]
+        else:
+            clean_name = name
+
+        return clean_name.strip('.').strip().replace('.', ' ')
+
+    def get_metadata(self,video):
+        query=self.clean_name_for_search(video)
+        print(query)
+        if self.is_tv_or_movie(video)=="Movie":
+            search = tmdb.Search()
+            response = search.movie(query=query)
+            return tmdb.Movies(search.results[0]['id'])
+        else:
+            search = tmdb.Search()
+            response = search.tv(query=query)
+            return tmdb.TV(search.results[0]['id'])
 
 
     def update_main_folder(self,main_folder):
@@ -52,3 +78,4 @@ class VideoManager:
             self.videos.remove(video)
         except Exception as e:
             print(f"Error deleting video and folder: {e}")
+

@@ -12,6 +12,6 @@ if __name__ == "__main__":
     manager = VideoManager(MAIN_FOLDER, FILE_EXTENSIONS, EXCLUSION_LIST)
     manager.scan_for_videos_and_make_objects()
     for video in manager.videos:
-        print(vars(video))
+        print(video.metadata.info())
 
 
