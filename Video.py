@@ -8,7 +8,7 @@ class Video:
     def __init__(self, path, size, video_type, name, ext,metadata):
         self.path = path
         self.size = size
-        self.type = video_type
+        self.video_type = video_type
         self.name = name
         self.ext = ext
         self.metadata = metadata
