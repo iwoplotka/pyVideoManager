@@ -1,5 +1,6 @@
 import os
 import pathlib
+import pickle
 import re
 import shutil
 import tmdbsimple as tmdb
@@ -8,12 +9,26 @@ import tmdbsimple as tmdb
 from Video import Video
 
 tmdb.API_KEY = "ddf06dec75894ad70d54de116951c8ef"
+FILE_EXTENSIONS = [".mp4", ".mkv"]
+EXCLUSION_LIST = ['h264-lazycunts', 'x264-PHOENiX', 'WEBRip', 'x265-RARBG', 'AMZN', 'DDP5', 'Atmos', 'x264-NOGRP',
+                      'x264-CM', 'WEB-DL', 'BluRay', 'H264', 'AAC-RARBG', '264-NTb', '1', 'x264-usury', 'blueray',
+                      'DSNP', 'HMAX', 'x264-NTb', 'Repack', '264-CM', 'x264-NTb[rartv]', '0', 'DD2', 'h264-plzproper',
+                      'WEB', 'YIFY']
 class VideoManager:
-    def __init__(self, main_folder, file_extensions, exclusion_list):
-        self.main_folder = main_folder
-        self.file_extensions = file_extensions
-        self.exclusion_list = exclusion_list
+    def __init__(self):
+        self.load_main_folder()
+        self.file_extensions = FILE_EXTENSIONS
+        self.exclusion_list = EXCLUSION_LIST
         self.videos = []
+
+    def load_main_folder(self):
+        global main_folder
+        if os.path.exists("main_folder.pkl"):
+            with open("main_folder.pkl", "rb") as file:
+                self.main_folder = pickle.load(file)
+
+        else:
+            self.main_folder = pathlib.Path("")
 
     def is_tv_or_movie(self, video):
         if re.search(r'S\d{1,2}E\d{1,2}', str(video)) is not None:
@@ -47,16 +62,19 @@ class VideoManager:
         return clean_name.strip('.').strip().replace('.', ' ')
 
     def get_metadata(self,video):
-        query=self.clean_name_for_search(video)
-        print(query)
-        if self.is_tv_or_movie(video)=="Movie":
-            search = tmdb.Search()
-            response = search.movie(query=query)
-            return tmdb.Movies(search.results[0]['id'])
-        else:
-            search = tmdb.Search()
-            response = search.tv(query=query)
-            return tmdb.TV(search.results[0]['id'])
+        try:
+            query=self.clean_name_for_search(video)
+            print(query)
+            if self.is_tv_or_movie(video)=="Movie":
+                search = tmdb.Search()
+                response = search.movie(query=query)
+                return tmdb.Movies(search.results[0]['id'])
+            else:
+                search = tmdb.Search()
+                response = search.tv(query=query)
+                return tmdb.TV(search.results[0]['id'])
+        except:
+            pass
 
 
     def update_main_folder(self,main_folder):
