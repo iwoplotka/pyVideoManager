@@ -11,6 +11,15 @@ import requests
 from PIL import Image, ImageTk
 from VideoManager import VideoManager
 
+
+def resource_path(relative_path):
+    try:
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
+
 # Function to load poster asynchronously
 def load_poster_async(poster_path):
     # Modify the poster path to download a lower resolution image
@@ -139,11 +148,11 @@ if __name__ == "__main__":
     if manager.videos==[]:
         canvas.create_text(10.0, 770.0, anchor="nw", text="Choose a folder conaining \nyour videos to start", fill="#FFFFF2",font=("IBMPlexMono SemiBoldItalic", 9))
     # Load images for buttons
-    image_dir = Image.open("image_3.png")
+    image_dir = Image.open(resource_path("image_3.png"))
     image_dir = ImageTk.PhotoImage(image_dir)
-    image_delete = Image.open("delete.png").resize((70, 70))
+    image_delete = Image.open(resource_path("delete.png")).resize((70, 70))
     image_delete = ImageTk.PhotoImage(image_delete)
-    image_play = Image.open("play.png").resize((70, 70))
+    image_play = Image.open(resource_path("play.png")).resize((70, 70))
     image_play = ImageTk.PhotoImage(image_play)
 
     # Create buttons
@@ -163,7 +172,7 @@ if __name__ == "__main__":
     populate_listbox()
     listbox.bind("<<ListboxSelect>>", on_select)
     scrollbar = Scrollbar(window, orient="vertical", command=listbox.yview)
-    scrollbar.place(x=680, y=140, height=540)
+    scrollbar.place(x=680, y=170, height=540)
     listbox.config(yscrollcommand=scrollbar.set)
 
     # Start GUI event loop
