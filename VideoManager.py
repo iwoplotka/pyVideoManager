@@ -10,7 +10,7 @@ from Video import Video
 
 tmdb.API_KEY = "ddf06dec75894ad70d54de116951c8ef"
 FILE_EXTENSIONS = [".mp4", ".mkv"]
-EXCLUSION_LIST = ['h264-lazycunts', 'x264-PHOENiX', 'WEBRip', 'x265-RARBG', 'AMZN', 'DDP5', 'Atmos', 'x264-NOGRP',
+EXCLUSION_LIST = ['x264-PHOENiX', 'WEBRip', 'x265-RARBG', 'AMZN', 'DDP5', 'Atmos', 'x264-NOGRP',
                       'x264-CM', 'WEB-DL', 'BluRay', 'H264', 'AAC-RARBG', '264-NTb', '1', 'x264-usury', 'blueray',
                       'DSNP', 'HMAX', 'x264-NTb', 'Repack', '264-CM', 'x264-NTb[rartv]', '0', 'DD2', 'h264-plzproper',
                       'WEB', 'YIFY']

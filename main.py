@@ -31,23 +31,23 @@ def metadata_display_tv(metadata):
     metadata_text = (
         f"Title: {metadata['original_name']}\n"
         f"Release Date: {metadata['first_air_date']}\n"
-        f"Rating: {metadata['vote_average']} / 10\n"
+        f"Rating: {str(metadata['vote_average'])[:3]}\n"
         f"Language: {metadata['original_language']}\n"
-        f"Popularity: {metadata['popularity']}\n"
+        f"Popularity: {metadata['overview'][:30]}\n{metadata['overview'][30:80]}\n{metadata['overview'][80:130]}...\n"
     )
-    canvas.create_text(960, 500, anchor="center", text=metadata_text, fill="#1E89B3", font=("Helvetica", 14), tags="info")
+    canvas.create_text(960, 550, anchor="center", text=metadata_text, font=("Helvetica", 14), tags="info")
 
 # Function to display movie metadata
 def metadata_display_movie(metadata):
     metadata_text = (
         f"Title: {metadata['title']}\n"
         f"Release Date: {metadata['release_date']}\n"
-        f"Rating: {metadata['vote_average']} / 10\n"
+        f"Rating: {str(metadata['vote_average'])[:3]}\n"
         f"Runtime: {metadata['runtime']} minutes\n"
         f"Language: {metadata['original_language']}\n"
-        f"Popularity: {metadata['popularity']}\n"
+        f"Popularity: {metadata['overview'][:30]}\n{metadata['overview'][30:80]}\n{metadata['overview'][80:130]}...\n"
     )
-    canvas.create_text(960, 500, anchor="center", text=metadata_text, fill="#1E89B3", font=("Helvetica", 14), tags="info")
+    canvas.create_text(960, 550, anchor="center", text=metadata_text,  font=("Helvetica", 14), tags="info")
 
 # Function called when a video is selected
 def on_select(event):
@@ -116,13 +116,13 @@ if __name__ == "__main__":
     # Initialize the Tkinter window
     window = Tk()
     window.geometry("1200x837")
-    window.configure(bg="#3360B9")
-    window.title("Video Manager")
+    window.configure(bg="#627264")
+    window.title("Video Manager - A local Movie and Tv Browser")
 
     # Create canvas for UI elements
     canvas = Canvas(
         window,
-        bg="#3360B9",
+        bg="grey",
         height=837,
         width=1200,
         bd=0,
@@ -134,9 +134,10 @@ if __name__ == "__main__":
     # Draw background rectangles and text
     canvas.create_rectangle(164.0, 96.0, 721.0, 741.0, fill="#EAEEF0", outline="")
     canvas.create_rectangle(742.0, 71.0, 1179.0, 765.0, fill="#EAEEF0", outline="")
-    canvas.create_text(281.0, 16.0, anchor="nw", text="Video Manager", fill="#FFFFF2", font=("IBMPlexMono SemiBoldItalic", 40))
+    canvas.create_text(250.0, 16.0, anchor="nw", text="Video Manager", fill="#FFFFF2", font=("IBMPlexMono SemiBoldItalic", 40))
     canvas.create_text(250.0, 770.0, anchor="nw", text=f"Directory:{manager.main_folder}", fill="#FFFFFF", font=("IBMPlexMono SemiBoldItalic", 16))
-
+    if manager.videos==[]:
+        canvas.create_text(10.0, 770.0, anchor="nw", text="Choose a folder conaining \nyour videos to start", fill="#FFFFF2",font=("IBMPlexMono SemiBoldItalic", 9))
     # Load images for buttons
     image_dir = Image.open("image_3.png")
     image_dir = ImageTk.PhotoImage(image_dir)
@@ -146,7 +147,7 @@ if __name__ == "__main__":
     image_play = ImageTk.PhotoImage(image_play)
 
     # Create buttons
-    dir_button = Button(window, bg="#3360B9", image=image_dir, bd=0, highlightthickness=0, command=change_main_folder)
+    dir_button = Button(window, bg="grey", image=image_dir, bd=0, highlightthickness=0, command=change_main_folder)
     dir_button.place(x=164, y=750)
     button_delete = Button(window, bd=0, highlightthickness=0, image=image_delete, bg="#EAEEF0", command=delete_video)
     button_delete.place(x=850, y=680)
@@ -154,15 +155,15 @@ if __name__ == "__main__":
     button_play.place(x=950, y=680)
 
     # Sort videos and create listbox
-    manager.videos.sort(key=lambda x: x.video_type)
-    listbox = Listbox(window, bg="#EAEEF0", bd=0, highlightthickness=0, relief="ridge", font=("Helvetica", 14), width=40, height=20)
+    manager.videos.sort(key=lambda x: (x.video_type, ))
+    listbox = Listbox(window, bg="#EAEEF0", bd=2, highlightthickness=0, relief="sunken", font=("Helvetica", 14), width=45, height=25)
     listbox.place(x=200, y=150)
 
     # Populate listbox and bind events
     populate_listbox()
     listbox.bind("<<ListboxSelect>>", on_select)
     scrollbar = Scrollbar(window, orient="vertical", command=listbox.yview)
-    scrollbar.place(x=680, y=150, height=380)
+    scrollbar.place(x=680, y=140, height=540)
     listbox.config(yscrollcommand=scrollbar.set)
 
     # Start GUI event loop
